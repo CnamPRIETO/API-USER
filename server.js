@@ -84,6 +84,21 @@ app.put('/api/auth/user', authenticateToken, async (req, res) => {
     return res.json({ message: 'Utilisateur mis à jour avec succès.' });
 });
 
+app.delete('/api/auth/user', authenticateToken, (req, res) => {
+    // On récupère l'utilisateur authentifié via req.user (décodé depuis le token)
+    const userIndex = users.findIndex(u => u.id === req.user.id);
+
+    if (userIndex === -1) {
+        return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+    }
+
+    // On supprime l'utilisateur du tableau
+    users.splice(userIndex, 1);
+
+    // Réponse confirmant la suppression
+    return res.json({ message: 'Utilisateur supprimé avec succès.' });
+});
+
 // Démarrage du serveur
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur le port ${PORT}`);
